@@ -155,6 +155,16 @@ def find_boundaries(f):
     else:
         you're done; return lo,hi
     '''
+    lo = -1
+    hi = 1
+    while True:
+        mid = (lo + hi) // 2
+        if f(lo) < f(mid):
+            lo *= 2
+        elif f(hi) < f(mid):
+            hi *=2
+        else:
+            return (lo, hi)
 
 
 def argmin_simple(f, epsilon=1e-3):
