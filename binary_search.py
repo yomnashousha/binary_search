@@ -26,6 +26,22 @@ def find_smallest_positive(xs):
     >>> find_smallest_positive([-3, -2, -1]) is None
     True
     '''
+    if len(xs) == 0:
+        return None
+
+    def go(left, right):
+        if left == right:
+            if xs[left] > 0:
+                return left
+            else:
+                return None
+        mid = (left + right) // 2 
+        if xs[mid] > 0:
+            right = mid 
+        elif xs[mid] <= 0:
+            left = mid + 1
+        return go(left, right)
+    return go(0, len(xs) - 1) 
 
 
 def count_repeats(xs, x):
@@ -52,6 +68,42 @@ def count_repeats(xs, x):
     >>> count_repeats([3, 2, 1], 4)
     0
     '''
+    def lowest(left, right): 
+        if left < right:
+            if xs[left] == x:
+                return left 
+            mid = (left + right) // 2    
+            if xs[mid] > x: 
+                left = mid + 1 
+            if xs[mid] <= x: 
+                right = mid 
+        else:
+            return left if xs[left] == x else -1
+        return lowest(left, right) 
+
+    def highest(left, right): 
+        if left < right:
+            if xs[right] == x: 
+                return right
+            mid = (left + right) // 2
+            if xs[mid] < x: 
+                right = mid - 1
+            elif xs[mid] >= x and left != mid:
+                left = mid + 1
+            else: 
+                return left if xs[left] == x else -1
+        else:
+            return right if xs[right] == x else -1
+        return highest(left, right)
+
+    if xs: 
+        diff1 = lowest(0, len(xs) - 1)
+        diff2 = highest(0, len(xs) -1)
+        diff = diff2 - diff1
+        return diff + 1 if diff2 != -1 else 0
+    else: 
+        return 0    
+
 
 
 def argmin(f, lo, hi, epsilon=1e-3):
@@ -87,6 +139,18 @@ def argmin(f, lo, hi, epsilon=1e-3):
     >>> argmin(lambda x: (x-5)**2, -20, 0)
     -0.00016935087808430278
     '''
+    def go(lo, hi):
+        m1 = lo + (hi - lo) / 3 
+        m2 = lo + (hi - lo) / 3 * 2
+
+        if (hi - lo) < epsilon: 
+            return hi 
+        elif f(m2) > f(m1):
+            return go(lo, m2) 
+        elif f(m1) > f(m2):
+            return go(m1, hi)
+    return go(lo, hi) 
+
 
 
 ################################################################################
